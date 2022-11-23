@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import http from 'http';
 import { createProxyServer } from 'http-proxy';
+import https from 'https';
 
 import { extractHeader } from './utils/extract-header';
 import { validateApiKey } from './utils/validate-api-key';
@@ -12,14 +13,22 @@ const proxy = createProxyServer();
 
 const server = http.createServer(async (req, res) => {
  try {
-  const target = extractHeader(req, res, "X-Proxy-Target");
   const apiKey = extractHeader(req, res, "X-Proxy-API-Key");
+  const target = extractHeader(req, res, "X-Proxy-Target");
 
   await validateApiKey(apiKey);
 
-  delete req.headers["host"];
+  const parsedUrl = new URL(target);
+  const proxiedRequest: https.RequestOptions = {
+   host: parsedUrl.host,
+   path: `${parsedUrl.pathname}${parsedUrl.search}`,
+   method: req.method,
+   headers: { ...req.headers, host: parsedUrl.host },
+  };
 
-  proxy.web(req, res, { target, ignorePath: true });
+  delete proxiedRequest.headers!["accept-encoding"];
+
+  https.request(proxiedRequest, (response) => response.pipe(res)).end();
  } catch (err) {
   if (err instanceof Error && err.cause === "CLIENT_BAD_REQUEST") {
    res.writeHead(403);
