@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: proxy-deployment
+ namespace: default
+spec:
+ replicas: 1
+ selector:
+  matchLabels:
+   name: proxy-deployment
+ strategy:
+  rollingUpdate:
+   maxSurge: 25%
+   maxUnavailable: 25%
+  type: RollingUpdate
+ template:
+  metadata:
+   labels:
+    name: proxy-deployment
+  spec:
+   containers:
+    - image: europe-west1-docker.pkg.dev/emre-aksoy/docker/proxy
+      imagePullPolicy: Always
+      name: proxy-1
+      resources:
+       limits:
+        cpu: 150m
+        memory: "100Mi"
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File

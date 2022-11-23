@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+ name: proxy-eaksy-com
+ namespace: default
+spec:
+ secretName: proxy-eaksy-com-tls
+ issuerRef:
+  name: default-issuer
+  kind: ClusterIssuer
+ dnsNames:
+  - proxy.eaksy.com

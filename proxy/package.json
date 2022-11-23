@@ -1,0 +1,32 @@
+{
+ "name": "proxy",
+ "version": "1.0.0",
+ "description": "",
+ "main": "out/index.js",
+ "scripts": {
+  "start:tsc": "tsc -w",
+  "start:server": "nodemon --exec \"node ./out/index.js\"",
+  "start": "concurrently \"npm run start:tsc\" \"npm run start:server\"",
+  "build:tsc": "npx tsc",
+  "build:docker": "docker build -t europe-west1-docker.pkg.dev/emre-aksoy/docker/proxy .",
+  "build": "npm run build:tsc && npm run build:docker",
+  "deploy:container": "docker push europe-west1-docker.pkg.dev/emre-aksoy/docker/proxy",
+  "deploy:k8s": "kubectl apply -f ./k8s && kubectl rollout restart deployment proxy-deployment",
+  "deploy": "npm run build && npm run deploy:container && npm run deploy:k8s"
+ },
+ "keywords": [],
+ "author": "",
+ "license": "ISC",
+ "devDependencies": {
+  "@types/http-proxy": "^1.17.9",
+  "@types/node": "^18.11.9",
+  "concurrently": "^7.6.0",
+  "nodemon": "^2.0.20",
+  "typescript": "^4.9.3"
+ },
+ "dependencies": {
+  "@google-cloud/secret-manager": "^4.1.4",
+  "dotenv": "^16.0.3",
+  "http-proxy": "^1.18.1"
+ }
+}
