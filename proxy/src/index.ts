@@ -1,6 +1,5 @@
 import dotenv from 'dotenv';
 import http from 'http';
-import { createProxyServer } from 'http-proxy';
 import https from 'https';
 
 import { extractHeader } from './utils/extract-header';
@@ -8,8 +7,6 @@ import { validateApiKey } from './utils/validate-api-key';
 
 // init
 dotenv.config();
-
-const proxy = createProxyServer();
 
 const server = http.createServer(async (req, res) => {
  try {
