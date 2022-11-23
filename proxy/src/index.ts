@@ -19,7 +19,7 @@ const server = http.createServer(async (req, res) => {
 
   delete req.headers["host"];
 
-  proxy.web(req, res, { target });
+  proxy.web(req, res, { target, ignorePath: true });
  } catch (err) {
   if (err instanceof Error && err.cause === "CLIENT_BAD_REQUEST") {
    res.writeHead(403);
