@@ -18,6 +18,7 @@ spec:
    labels:
     name: proxy-deployment
   spec:
+   serviceAccountName: google-service-account
    containers:
     - image: europe-west1-docker.pkg.dev/emre-aksoy/docker/proxy
       imagePullPolicy: Always
